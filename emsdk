@@ -1,4 +1,4 @@
 #!/bin/bash
 #Loading emsdk
 source $EMSDK/emsdk_env.sh
-export PATH=:$EMSDK/upstream/bin:$PATH
+# export PATH=:$EMSDK/upstream/bin:$PATH
