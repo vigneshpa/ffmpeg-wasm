@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#Loading emsdk
-source $EMSDK/emsdk_env.sh
-export PATH=:$EMSDK/upstream/bin:$PATH
-
 cd ffmpeg
 
 # verify Emscripten version
@@ -42,5 +38,5 @@ emmake make -j3
 mkdir -p ../dist
 
 # build ffmpeg.wasm
-cp ./ff*_g* ../dist/
+cp ./ff*_g* ../dist/ffmpeg
 cd ../dist
