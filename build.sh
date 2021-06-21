@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# config
+
+DIST_DIR=../package/dist/bin
+
 cd ffmpeg
 
 # verify Emscripten version
@@ -35,8 +39,14 @@ emconfigure ./configure "${CONFIG_ARGS[@]}"
 emmake make -j3
 
 # making dist
-mkdir -p ../dist
+mkdir -p $DIST_DIR
 
 # build ffmpeg.wasm
-cp ./ff*_g* ../dist/ffmpeg
-cd ../dist
+cp ./ff*_g* $DIST_DIR/
+cd $DIST_DIR
+for f in *_g; do
+    mv -- "$f" "${f%_g}.js"
+done
+for f in *_g.worker.js; do
+    mv -- "$f" "${f%_g.worker.js}.worker.js"
+done
