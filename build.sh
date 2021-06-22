@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# config
+#loading emsdk
+source $EMSDK/emsdk_env.sh
 
+# config
 DIST_DIR=../package/dist/bin
 
+#into the ffpmeg directory
 cd ffmpeg
 
 # verify Emscripten version
