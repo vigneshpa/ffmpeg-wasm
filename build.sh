@@ -93,6 +93,3 @@ cd $DIST_DIR
 for f in *_g; do
     mv -- "$f" "${f%_g}.js"
 done
-for f in *_g.worker.js; do
-    mv -- "$f" "${f%_g.worker.js}.worker.js"
-done
