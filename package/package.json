@@ -4,7 +4,7 @@
   "description": "ffmpeg port to wasm",
   "main": "dist/index.js",
   "type": "module",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     
   },

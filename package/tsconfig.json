@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "outDir": "dist/",
+        "declarationDir": "/dist/types",
+        "sourceRoot": "src",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "module": "ES6",
+        "removeComments": true,
+        "rootDir": "src",
+        "strict": true,
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable",
+        ],
+        "target": "ES2019"
+    },
+    "include": [
+        "src"
+    ]
+}
