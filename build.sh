@@ -37,44 +37,44 @@ CONFIG_ARGS=(
   --enable-gpl
   --enable-version3
 # lib options
-  # --enable-avisynth
-  # --disable-cuda-llvm
-  --enable-lto
-  --enable-fontconfig
-  # --enable-libaom
-  --enable-libass
-  # --enable-libdav1d
-  --enable-libfreetype
-  --enable-libfribidi
-  # --enable-libgsm
-  # --enable-libiec61883
-  # --enable-libjack
-  # --enable-libmfx
-  # --enable-libmodplug
-  --enable-libmp3lame
-  # --enable-libopencore_amrnb
-  # --enable-libopencore_amrwb
-  --enable-libopenjpeg
-  --enable-libopus
-  # --enable-libpulse
-  # --enable-librav1e
-  --enable-librsvg
-  --enable-libsoxr
-  # --enable-libspeex
-  --enable-libsrt
-  # --enable-libssh
-  # --enable-libsvtav1
-  --enable-libtheora
-  --enable-libvidstab
-  --enable-libvmaf
-  --enable-libvorbis
-  --enable-libzimg
-  --enable-libxvid
-  # --enable-libxml2
-  --enable-libx264
-  --enable-libx265
-  --enable-libwebp
-  --enable-libvpx
+  # # --enable-avisynth
+  # # --disable-cuda-llvm
+  # --enable-lto
+  # --enable-fontconfig
+  # # --enable-libaom
+  # --enable-libass
+  # # --enable-libdav1d
+  # --enable-libfreetype
+  # --enable-libfribidi
+  # # --enable-libgsm
+  # # --enable-libiec61883
+  # # --enable-libjack
+  # # --enable-libmfx
+  # # --enable-libmodplug
+  # --enable-libmp3lame
+  # # --enable-libopencore_amrnb
+  # # --enable-libopencore_amrwb
+  # --enable-libopenjpeg
+  # --enable-libopus
+  # # --enable-libpulse
+  # # --enable-librav1e
+  # --enable-librsvg
+  # --enable-libsoxr
+  # # --enable-libspeex
+  # --enable-libsrt
+  # # --enable-libssh
+  # # --enable-libsvtav1
+  # --enable-libtheora
+  # --enable-libvidstab
+  # --enable-libvmaf
+  # --enable-libvorbis
+  # --enable-libzimg
+  # --enable-libxvid
+  # # --enable-libxml2
+  # --enable-libx264
+  # --enable-libx265
+  # --enable-libwebp
+  # --enable-libvpx
 )
 emconfigure ./configure "${CONFIG_ARGS[@]}"
 
