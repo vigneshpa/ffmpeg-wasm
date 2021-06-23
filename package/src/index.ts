@@ -10,11 +10,10 @@ export default class FFmpegWasm {
     worker: Worker | null = null;
     async loadWorker(options?: FFmpegOptions) {
         assignOptions(this.options, options);
-        this.worker = new Worker(this.options.binFolder + "/ffmpeg.worker.js");
+        this.worker = new Worker(this.options.binFolder + "/ffmpeg.js");
         this.worker.addEventListener("message", ev => {
             console.log(ev);
         });
-        this.worker.postMessage({cmd:"load"});
     }
 }
 
