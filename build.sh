@@ -15,7 +15,7 @@ emcc -v
 # configure FFMpeg with Emscripten
 CFLAGS="-s USE_PTHREADS"
 CXXFLAGS="$CFLAGS"
-LDFLAGS="$CFLAGS -s INITIAL_MEMORY=33554432 -s ENVIRONMENT=web,worker -s MODULARIZE -s EXIT_RUNTIME -s EXPORT_NAME=ffmpeg" # 33554432 bytes = 32 MB
+LDFLAGS="$CFLAGS -s INITIAL_MEMORY=33554432 -s ENVIRONMENT=web,worker -s MODULARIZE -s EXPORT_NAME=FFmpegFactory -s EXIT_RUNTIME" # 33554432 bytes = 32 MB
 CONFIG_ARGS=(
   --target-os=none        # use none to prevent any os specific configurations
   --arch=x86_32           # use x86_32 to achieve minimal architectural optimization

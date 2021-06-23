@@ -1,18 +1,30 @@
-interface WorkerGlobalScope {
-    Module: Partial<EmscriptenModule>
-}
+// import ffmpeg from `${options.distFolder}/bin/${options.tool}.js`;
+
+//interfaces
+// interface W
 interface Options {
     distFolder: string;
     tool: ("ffmpeg" | "ffprobe" | "ffplay");
     args: string[];
     bufferSize: number;
 }
+interface WorkerGlobalScope {
+    moduleInstance:EmscriptenModule;
+    FFmpegFactory: EmscriptenModuleFactory;
+}
+
+//Variables
 let options: Options;
 const files = {
     stdin: new File([""], "stdin"),
 } as { [key: string]: File };
+
+
+//Functions static
 const init = (optionsa: Options) => {
     options = optionsa;
+    importScripts(`${options.distFolder}/bin/${options.tool}.js`);
+
 }
 const loadFile = (name: string, file: File) => {
     files[name] = file;
@@ -21,8 +33,8 @@ const loadFile = (name: string, file: File) => {
 const getFile = (name: string) => {
     return files[name];
 };
-const loadWasm = () => {
-    self.Module = {
+const loadWasm = async () => {
+    self.moduleInstance = await self.FFmpegFactory({
 
         //Locating file
         locateFile(path: string, prefix: string) {
@@ -48,18 +60,14 @@ const loadWasm = () => {
         onRuntimeInitialized() {
             postMessage({ event: "runtimeInitialized" });
         },
-        // print(data: string) {
-        //     postMessage({ event: "stdout", data })
-        // },
-        // printErr(data: string) {
-        //     postMessage({ event: "stderr", data })
-        // },
-
-        //exit runtime after execution
-        noExitRuntime: false,
-    }
-    importScripts(`${options.distFolder}/bin/${options.tool}.js`);
+    });
 }
+
+
+
+
+
+//Adding event listener after initilising static functions
 addEventListener("message", ev => {
     if (ev.data.cmd)
         switch (ev.data.cmd) {
@@ -81,6 +89,9 @@ addEventListener("message", ev => {
         postMessage({ reqId, reqData });
     }
 })
+
+
+// Hoisted Util functions
 function getWriter(bfrSize: number, flush: (bfr: Uint8Array, length: number) => void): [((num: number | null) => void), typeof flush] {
     const buffer = new Uint8Array(bfrSize);
     let pointer = 0;

@@ -5,6 +5,6 @@
         "declarationMap": true,
         "removeComments": true,
         "strict": true,
-        "target": "ES2019",
+        "target": "ES2020",
     },
 }
