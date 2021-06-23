@@ -1,19 +1,24 @@
 export type FFmpegOptions = Partial<typeof FFmpegWasm.prototype.options>;
-export default class FFmpegWasm {
+export  class FFmpegWasm {
     options = {
         disableWorker: false as boolean,
-        binFolder: "/ffmpeg" as string
+        distFolder: "/ffmpeg" as string,
+        tool: "ffmpeg" as ("ffmpeg" | "ffprobe" | "ffplay")
     };
     constructor(options?: FFmpegOptions) {
         assignOptions(this.options, options);
     }
     worker: Worker | null = null;
-    async loadWorker(options?: FFmpegOptions) {
+    loadWorker(options?: FFmpegOptions) {
         assignOptions(this.options, options);
-        this.worker = new Worker(this.options.binFolder + "/ffmpeg.js");
+        this.worker = new Worker(this.options.distFolder + "/index.worker.js");
         this.worker.addEventListener("message", ev => {
             console.log(ev);
         });
+        this.worker.postMessage({ cmd: "init", options: this.options });
+    }
+    async loadWasm() {
+        this.worker?.postMessage({ cmd: "loadWasm" });
     }
 }
 

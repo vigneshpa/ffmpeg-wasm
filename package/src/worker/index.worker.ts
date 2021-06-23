@@ -1,1 +1,0 @@
-importScripts("/dist/bin/ffmpeg.js")

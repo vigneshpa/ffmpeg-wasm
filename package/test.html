@@ -8,10 +8,11 @@
 </head>
 <body>
     <script type="module" async>
-        import FFmpeg from "/dist/index.js";
-        const ffmpeg = new FFmpeg({binFolder:"/dist/bin"});
+        import {FFmpegWasm} from "/lib/index.js";
+        const ffmpeg = new FFmpegWasm({distFolder:"/dist"});
         window.ffmpeg = ffmpeg;
         ffmpeg.loadWorker();
+        ffmpeg.loadWasm();
     </script>
 </body>
 </html>

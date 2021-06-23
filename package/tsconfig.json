@@ -1,23 +1,18 @@
 {
+    "extends": "./tsconfig.common.json",
     "compilerOptions": {
-        "outDir": "dist/",
-        "declarationDir": "dist/types",
-        "sourceRoot": "src",
-        "sourceMap": true,
-        "declaration": true,
-        "declarationMap": true,
+        "outDir": "lib/",
+        "declarationDir": "lib/types",
         "module": "ES6",
-        "removeComments": true,
         "rootDir": "src",
-        "strict": true,
         "lib": [
             "ESNext",
             "DOM",
             "DOM.Iterable",
         ],
-        "target": "ES2019"
     },
-    "include": [
-        "src"
+    "files": ["src/index.ts"],
+    "references": [
+        {"path": "./tsconfig.worker.json"}
     ]
 }

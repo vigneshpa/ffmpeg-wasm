@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.common.json",
+    "compilerOptions": {
+        "outDir": "dist/",
+        "declarationDir": "dist/types",
+        "rootDir": "src",
+        "composite": true,
+        "lib": [
+            "ESNext",
+            "WebWorker",
+            "WebWorker.ImportScripts"
+        ],
+    },
+    "files": ["src/index.worker.ts"],
+}

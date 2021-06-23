@@ -2,3 +2,4 @@ dist
 lib
 package-lock.json
 node_modules
+package/tsconfig.worker.tsbuildinfo

@@ -2,12 +2,12 @@
   "name": "ffmpeg-wasm",
   "version": "0.1.0",
   "description": "ffmpeg port to wasm",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "type": "module",
-  "types": "dist/types/index.d.ts",
+  "types": "lib/types",
   "scripts": {
-    "build": "tsc",
-    "serve": "tsc -w & serve ."
+    "build": "tsc --build",
+    "serve": "tsc --build -w & serve ."
   },
   "repository": {
     "type": "git",
