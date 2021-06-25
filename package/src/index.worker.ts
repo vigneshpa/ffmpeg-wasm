@@ -42,7 +42,7 @@ const loadWasm = async () => {
         },
 
         // prerun
-        preRun: [() => {
+        preRun: [function(){
             const input = () => { return null };
             const output = getWriter(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stdout", buffer, length }, [buffer]));
             const error = getWriter(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stderr", buffer, length }, [buffer]));

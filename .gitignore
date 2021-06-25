@@ -1,5 +1,6 @@
-dist
-lib
-package-lock.json
-node_modules
-package/tsconfig.worker.tsbuildinfo
+/package/dist
+/package/lib
+/package/package-lock.json
+/package/node_modules
+/package/tsconfig.worker.tsbuildinfo
+/build
