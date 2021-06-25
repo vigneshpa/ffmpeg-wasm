@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# cd into the ffpmeg directory
+cd ffmpeg
+
 # Wasm memory options
 WASM_MEMORY=64    # Initial memory in bytes
 MEMORY_GROWTH=1   # Wheater to allow memory growth
@@ -23,8 +26,6 @@ source $EMSDK/emsdk_env.sh
 # loading llvm
 export PATH=$EMSDK/upstream/bin:$PATH
 
-# cd into the ffpmeg directory
-cd ffmpeg
 
 # verify Emscripten existance
 emcc -v
@@ -55,12 +56,12 @@ LINKER_FLAGS=(
     -s ENVIRONMENT=web,worker
     -s MODULARIZE
     -s EXPORT_NAME=FFmpegFactory
-    -s EXTRA_EXPORTED_RUNTIME_METHODS="[FS]"
+    -s EXPORTED_RUNTIME_METHODS="[FS]"
     -L$BUILD_DIR/lib
 )
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
 
-export EMCC_CFLAGS="$COMPILER_FLAGS $LINKER_FLAGS"
+# export EMCC_CFLAGS="$COMPILER_FLAGS $LINKER_FLAGS"
 
 # configure flags
 CONFIG_FLAGS=(
@@ -75,6 +76,9 @@ CONFIG_FLAGS=(
     --disable-doc
     --disable-debug
     --pkg-config-flags="--static"
+    --extra-cflags="$COMPILER_FLAGS"
+    --extra-cxxflags="$COMPILER_FLAGS"
+    --extra-ldflags="$COMPILER_FLAGS $LINKER_FLAGS"
     --nm=llvm-nm
     --ar=emar
     --ranlib=llvm-ranlib
