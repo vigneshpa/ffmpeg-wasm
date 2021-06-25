@@ -9,9 +9,11 @@
 <body>
     <script type="module" async>
         import FFmpegWasm from "/lib/index.js";
-        const ffmpeg = new FFmpegWasm({distFolder:"/dist"});
+        const ffmpeg = new FFmpegWasm({distFolder:"/dist", tool:"ffprobe"});
         window.ffmpeg = ffmpeg;
-        ffmpeg.loadWasm();
+        await ffmpeg.init();
+        await ffmpeg.execute();
+        ffmpeg.destroy();
     </script>
 </body>
 </html>
