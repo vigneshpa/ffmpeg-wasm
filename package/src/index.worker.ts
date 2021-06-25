@@ -54,18 +54,26 @@ const execute = async () => {
 
         // prerun
         preRun: [() => {
-            Module.FS.init(null, stdout?.writer, stderr.writer);
-            Module.FS.mkdir("/input")
+            Module.FS.init(null, stdout.writer, stderr.writer);
+            Module.FS.mkdir("/input");
             Module.FS.mount(Module.WORKERFS, { files }, "/input");
+            Module.FS.mkdir("/output");
+            Module.FS.mount(Module.IDBFS, {}, "/output");
         }],
 
         // Passing arguments
         arguments: options.args,
 
         // Logging and events
-        logReadFiles: true,
+        logReadFiles: false,
 
         // Print streams
+        print(print){
+            postMessage({stream:"stdOut", print});
+        },
+        printErr(print){
+            postMessage({stream:"stdErr", print});
+        },
 
         // postrun
         postRun: [

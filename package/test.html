@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FFmpeg-WASM test</title>
 </head>
+
 <body>
-    <script type="module" async>
+    <input type="file" id="filePicker" />
+    <button onclick="getData()">Get Metadata</button>
+    <script type="module">
         import FFmpegWasm from "/lib/index.js";
-        const ffmpeg = new FFmpegWasm({distFolder:"/dist", tool:"ffprobe"});
-        window.ffmpeg = ffmpeg;
-        await ffmpeg.init();
-        await ffmpeg.execute();
-        ffmpeg.destroy();
+        const filePicker = document.getElementById("filePicker");
+        window.getData = async function getData() {
+            const ffmpeg = new FFmpegWasm({ distFolder: "/dist", tool: "ffprobe", args:[`/input/${filePicker.files[0].name}`]});
+            await ffmpeg.loadFile(filePicker.files[0]);
+            await ffmpeg.init();
+            await ffmpeg.execute();
+            ffmpeg.destroy();
+        }
     </script>
 </body>
+
 </html>

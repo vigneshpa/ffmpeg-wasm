@@ -7,7 +7,7 @@ export default class FFmpegWasm {
         args: ["-h"] as string[],
         bufferSize: 1024 * 1024 as number,
         getStdErrFile: false as boolean,
-        getStdOutFile: true as boolean
+        getStdOutFile: false as boolean
     };
     private worker: Worker | null = null;
     private running = false as boolean;
@@ -20,7 +20,7 @@ export default class FFmpegWasm {
         this.worker = new Worker(this.options.distFolder + "/index.worker.js");
         this.worker.onmessage = (ev: MessageEvent) => {
             if (ev.data.std) return console.log(`[${ev.data.std}]`, ev.data.buffer, ev.data.length);
-            if (ev.data.print) return console.log(`[${ev.data.stream}]`, ev.data.message);
+            if (typeof ev.data.print === "string") return console.log(`[${ev.data.stream}]`, ev.data.print);
             if (ev.data.event) return console.log(`[${ev.data.event}]\t${ev.data.data || ''}`);
             if (ev.data.reqId) return this.reqHandlers[ev.data.reqId](ev.data.reqData);
             console.log(ev.data);
@@ -45,8 +45,8 @@ export default class FFmpegWasm {
         this.running = false;
     }
 
-    init(init: FFmpegOptions) {
-        Object.assign(this.options, init);
+    init(init?: FFmpegOptions) {
+        if(init)Object.assign(this.options, init);
         return this.requestWorker({ init: this.options }) as Promise<void>;
     }
 
