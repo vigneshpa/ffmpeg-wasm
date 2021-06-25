@@ -141,7 +141,7 @@ emconfigure ./configure "${CONFIG_FLAGS[@]}"
 emmake make -j3
 
 # build ffmpeg.wasm
-cp ./ff*_g* $DIST_DIR/
+mv ./ff*_g* $DIST_DIR/
 cd $DIST_DIR
 for f in *_g; do
     mv -- "$f" "${f%_g}.js"
