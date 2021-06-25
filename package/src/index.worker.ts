@@ -1,52 +1,59 @@
-// import ffmpeg from `${options.distFolder}/bin/${options.tool}.js`;
-
 //interfaces
-// interface W
 interface Options {
     distFolder: string;
     tool: ("ffmpeg" | "ffprobe" | "ffplay");
     args: string[];
     bufferSize: number;
 }
-interface WorkerGlobalScope {
-    moduleInstance:EmscriptenModule;
-    FFmpegFactory: EmscriptenModuleFactory;
+interface EmscriptenModule {
+    FS: typeof FS;
 }
+interface WorkerGlobalScope {
+    FFmpegFactory?: EmscriptenModuleFactory;
+}
+
+
+
+
 
 //Variables
 let options: Options;
-const files = {
-    stdin: new File([""], "stdin"),
-} as { [key: string]: File };
+const files = [] as File[];
+let isExecuting = false;
+
+
+
 
 
 //Functions static
 const init = (optionsa: Options) => {
     options = optionsa;
-    importScripts(`${options.distFolder}/bin/${options.tool}.js`);
-
+    if (!self.FFmpegFactory) importScripts(`${options.distFolder}/bin/${options.tool}.js`);
 }
-const loadFile = (name: string, file: File) => {
-    files[name] = file;
+const loadFile = (file: File) => {
+    files.push(file);
     return null;
 };
 const getFile = (name: string) => {
-    return files[name];
+    return files[0];
 };
-const loadWasm = async () => {
-    self.moduleInstance = await self.FFmpegFactory({
+const execute = async () => {
+    if (!self.FFmpegFactory) throw Error("Please init before executing");
+    if (isExecuting) throw Error("Wasm is already executing");
+    isExecuting = true;
+    const stdinp = () => { return null };
+    const stdout = createBuffer(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stdout", buffer, length }, [buffer]));
+    const stderr = createBuffer(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stderr", buffer, length }, [buffer]));
+    const Module = {
 
         //Locating file
-        locateFile(path: string, prefix: string) {
+        locateFile(path, prefix) {
             return prefix + "bin/" + path;
         },
 
         // prerun
-        preRun: [function(){
-            const input = () => { return null };
-            const output = getWriter(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stdout", buffer, length }, [buffer]));
-            const error = getWriter(options.bufferSize, ({ buffer }, length) => postMessage({ std: "stderr", buffer, length }, [buffer]));
-            FS.init(input, output[0], error[0]);
+        preRun: [() => {
+            Module.FS.init(stdinp, stdout.writer, stderr.writer);
         }],
 
         //Passing arguments
@@ -54,13 +61,25 @@ const loadWasm = async () => {
 
         //Logging and events
         logReadFiles: true,
+
+        // postrun
+        postRun: [
+            () => {
+                stdout.flush();
+                stderr.flush();
+                postMessage({ event: "postRun" });
+            }
+        ],
+
         onAbort() {
             postMessage({ event: "abort" });
         },
         onRuntimeInitialized() {
             postMessage({ event: "runtimeInitialized" });
         },
-    });
+    } as Partial<EmscriptenModule> as EmscriptenModule;
+    await self.FFmpegFactory(Module);
+    isExecuting = false;
 }
 
 
@@ -68,31 +87,23 @@ const loadWasm = async () => {
 
 
 //Adding event listener after initilising static functions
-addEventListener("message", ev => {
-    if (ev.data.cmd)
-        switch (ev.data.cmd) {
-            case "init":
-                init(ev.data.options);
-                break;
-            case "loadWasm":
-                loadWasm();
-                break;
-            default:
-                console.log(`Unknown command ${ev.data.cmd} recived from main thread`);
-                break;
-        };
+addEventListener("message", async ev => {
     if (ev.data.req) {
         const reqId = ev.data.reqId;
-        let reqData: any;
-        if (ev.data.req.loadFile) reqData = loadFile(ev.data.req.loadFile, ev.data.req.file);
-        if (ev.data.req.getFile) reqData = getFile(ev.data.req.getFile);
-        postMessage({ reqId, reqData });
+        if (ev.data.req.init) postMessage({ reqId, reqData: init(ev.data.req.init) });
+        if (ev.data.req.execute) postMessage({ reqId, reqData: execute() });
+        if (ev.data.req.loadFile) postMessage({ reqId, reqData: loadFile(ev.data.req.loadFile) });
+        if (ev.data.req.getFile) postMessage({ reqId, reqData: getFile(ev.data.req.getFile) });
+        throw new Error("Unknown request recived");
     }
 })
 
 
+
+
+
 // Hoisted Util functions
-function getWriter(bfrSize: number, flush: (bfr: Uint8Array, length: number) => void): [((num: number | null) => void), typeof flush] {
+function createBuffer(bfrSize: number, flush: (bfr: Uint8Array, length: number) => void) {
     const buffer = new Uint8Array(bfrSize);
     let pointer = 0;
     const writer = (num: number | null) => {
@@ -100,10 +111,10 @@ function getWriter(bfrSize: number, flush: (bfr: Uint8Array, length: number) => 
             buffer[pointer] = num
             pointer += 1;
         }
-        if (num === null || num === 10 || pointer == (bfrSize - 1)) {
+        if (num === null || pointer == (bfrSize - 1)) {
             flush(buffer, pointer + 1);
             pointer = 0;
         };
     };
-    return [writer, flush];
+    return { writer, flush: () => flush(buffer, pointer + 1) };
 }
