@@ -39,7 +39,7 @@ INITIALM=$(($WASM_MEMORY * 1024 * 1024))
 
 # Compiler and linker flags
 COMPILER_FLAGS=(
-    # -o3
+    -o3
     -s USE_PTHREADS
     -I$BUILD_DIR/include
 )
@@ -56,7 +56,9 @@ LINKER_FLAGS=(
     -s ENVIRONMENT=web,worker
     -s MODULARIZE
     -s EXPORT_NAME=FFmpegFactory
-    -s EXPORTED_RUNTIME_METHODS="[FS]"
+    -s EXPORTED_RUNTIME_METHODS="[FS,WORKERFS,IDBFS]"
+    -lidbfs.js
+    -lworkerfs.js
     -L$BUILD_DIR/lib
 )
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
