@@ -4,7 +4,7 @@
 cd ffmpeg
 
 # Wasm memory options
-WASM_MEMORY=64    # Initial memory in bytes
+WASM_MEMORY=64    # Initial memory in Mega Bytes
 MEMORY_GROWTH=1   # Wheater to allow memory growth
 
 # output directory
@@ -23,7 +23,7 @@ mkdir -p $BUILD_DIR
 # loading emsdk environment variables
 source $EMSDK/emsdk_env.sh
 
-# loading llvm
+# adding llvm to path
 export PATH=$EMSDK/upstream/bin:$PATH
 
 
