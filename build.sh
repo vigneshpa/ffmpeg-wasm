@@ -5,10 +5,10 @@ WASM_MEMORY=512    # Initial memory in Mega Bytes
 MEMORY_GROWTH=0   # Wheater to allow memory growth
 
 # output directory
-DIST_DIR=package/dist/bin
+DIST_DIR=./package/dist/bin
 
 # build directory
-BUILD_DIR=build
+BUILD_DIR=./build
 
 # exit if anyting fails
 set -euo pipefail
@@ -135,11 +135,11 @@ CONFIG_FLAGS=(
     # --enable-libvpx
 )
 cd $BUILD_DIR
-emconfigure ../configure "${CONFIG_FLAGS[@]}"
+DIST_DIR="../$DIST_DIR"
+emconfigure ../ffmpeg/configure "${CONFIG_FLAGS[@]}"
 
 # build ffmpeg
 emmake make -j3
-cd ..
 
 rm -rf $DIST_DIR
 mkdir -p $DIST_DIR
