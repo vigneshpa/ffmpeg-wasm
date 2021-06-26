@@ -2,7 +2,8 @@
   "name": "ffmpeg-wasm",
   "version": "0.1.0",
   "description": "ffmpeg port to wasm",
-  "main": "lib/index.js",
+  "browser": "lib/index.js",
+  "files":["/dist/**/*", "/lib/**/*"],
   "type": "module",
   "types": "lib/types",
   "scripts": {
