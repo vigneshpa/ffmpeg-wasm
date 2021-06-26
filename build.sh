@@ -1,17 +1,14 @@
 #!/bin/bash
 
-# cd into the ffpmeg directory
-cd ffmpeg
-
 # Wasm memory options
-WASM_MEMORY=64    # Initial memory in Mega Bytes
-MEMORY_GROWTH=1   # Wheater to allow memory growth
+WASM_MEMORY=512    # Initial memory in Mega Bytes
+MEMORY_GROWTH=0   # Wheater to allow memory growth
 
 # output directory
-DIST_DIR=../package/dist/bin
+DIST_DIR=package/dist/bin
 
 # build directory
-BUILD_DIR=../build
+BUILD_DIR=build
 
 # exit if anyting fails
 set -euo pipefail
@@ -41,7 +38,7 @@ INITIALM=$(($WASM_MEMORY * 1024 * 1024))
 COMPILER_FLAGS=(
     -o3
     -s USE_PTHREADS
-    -I$BUILD_DIR/include
+    # -I$BUILD_DIR/include
 )
 COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 
@@ -59,7 +56,7 @@ LINKER_FLAGS=(
     -s EXPORTED_RUNTIME_METHODS="[FS,WORKERFS,IDBFS]"
     -lidbfs.js
     -lworkerfs.js
-    -L$BUILD_DIR/lib
+    # -L$BUILD_DIR/lib
 )
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
 
@@ -137,10 +134,15 @@ CONFIG_FLAGS=(
     # --enable-libwebp
     # --enable-libvpx
 )
-emconfigure ./configure "${CONFIG_FLAGS[@]}"
+cd $BUILD_DIR
+emconfigure ../configure "${CONFIG_FLAGS[@]}"
 
 # build ffmpeg
 emmake make -j3
+cd ..
+
+rm -rf $DIST_DIR
+mkdir -p $DIST_DIR
 
 # build ffmpeg.wasm
 mv ./ff*_g* $DIST_DIR/
