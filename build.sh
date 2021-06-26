@@ -38,7 +38,6 @@ INITIALM=$(($WASM_MEMORY * 1024 * 1024))
 COMPILER_FLAGS=(
     -o3
     -s USE_PTHREADS
-    # -I$BUILD_DIR/include
 )
 COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 
@@ -50,13 +49,12 @@ LINKER_FLAGS=(
     -s NO_PROXY_TO_PTHREAD
     -s INVOKE_RUN
     -s EXIT_RUNTIME
-    -s ENVIRONMENT=web,worker
+    -s ENVIRONMENT=worker
     -s MODULARIZE
     -s EXPORT_NAME=FFmpegFactory
     -s EXPORTED_RUNTIME_METHODS="[FS,WORKERFS,IDBFS]"
     -lidbfs.js
     -lworkerfs.js
-    # -L$BUILD_DIR/lib
 )
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
 
@@ -70,9 +68,8 @@ CONFIG_FLAGS=(
     --disable-x86asm
     --disable-inline-asm
     --disable-stripping
-    --disable-runtime-cpudetect
-    --disable-autodetect
     --disable-doc
+    --disable-ffplay
     --disable-debug
     --pkg-config-flags="--static"
     --extra-cflags="$COMPILER_FLAGS"
