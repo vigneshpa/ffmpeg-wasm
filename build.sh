@@ -47,6 +47,7 @@ LINKER_FLAGS=(
     -s PTHREAD_POOL_SIZE="$WORKER_THREADS"
     -s INITIAL_MEMORY="$INITIALM"
     -s ALLOW_MEMORY_GROWTH=$MEMORY_GROWTH
+    -s PTHREAD_POOL_SIZE_STRICT=2
     -s USE_SDL=2
     -s NO_PROXY_TO_PTHREAD
     -s INVOKE_RUN
@@ -71,6 +72,8 @@ CONFIG_FLAGS=(
     --disable-inline-asm
     --disable-stripping
     --disable-doc
+    --disable-runtime-cpudetect
+    --disable-autodetect
     --disable-ffplay
     --disable-debug
     --pkg-config-flags="--static"
