@@ -2,7 +2,8 @@
 
 # Wasm memory options
 WASM_MEMORY=512    # Initial memory in Mega Bytes
-MEMORY_GROWTH=0   # Wheater to allow memory growth
+MEMORY_GROWTH=0    # Wheater to allow memory growth
+WORKER_THREADS=4   # Setting thread pool
 
 # output directory
 DIST_DIR=./package/dist/bin
@@ -43,6 +44,7 @@ COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 
 
 LINKER_FLAGS=(
+    -s PTHREAD_POOL_SIZE="$WORKER_THREADS"
     -s INITIAL_MEMORY="$INITIALM"
     -s ALLOW_MEMORY_GROWTH=$MEMORY_GROWTH
     -s USE_SDL=2
@@ -142,7 +144,7 @@ rm -rf $DIST_DIR
 mkdir -p $DIST_DIR
 
 # build ffmpeg.wasm
-mv ./ff*_g* $DIST_DIR/
+cp ./ff*_g* $DIST_DIR/
 cd $DIST_DIR
 for f in *_g; do
     mv -- "$f" "${f%_g}.js"
