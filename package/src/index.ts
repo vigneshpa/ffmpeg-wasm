@@ -3,7 +3,7 @@ export type FFmpegOptions = Partial<typeof FFmpegWasm.prototype.options>;
 export default class FFmpegWasm {
     options = {
         distFolder: "/ffmpeg" as string,
-        tool: "ffmpeg" as ("ffmpeg" | "ffprobe" | "ffplay"),
+        tool: "ffmpeg" as ("ffmpeg" | "ffprobe"),
         args: ["-h"] as string[],
         bufferSize: 1024 * 1024 as number,
         getStdErrFile: false as boolean,
