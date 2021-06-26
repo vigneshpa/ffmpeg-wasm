@@ -1,7 +1,7 @@
 //interfaces
 interface Options {
     distFolder: string;
-    tool: ("ffmpeg" | "ffprobe" | "ffplay");
+    tool: ("ffmpeg" | "ffprobe");
     args: string[];
     bufferSize: number;
     getStdErrFile: boolean;
@@ -80,6 +80,7 @@ const execute = async () => {
         printErr(print) {
             postMessage({ stream: "stdErr", print });
         },
+        ENVIRONMENT_IS_PTHREAD:false,
 
         // postrun
         postRun: [
@@ -87,6 +88,7 @@ const execute = async () => {
                 stdout.flush();
                 stderr.flush();
                 postMessage({ event: "postRun" });
+                console.log(Module);
             }
         ],
 
