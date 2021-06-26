@@ -11,6 +11,7 @@ interface EmscriptenModule {
     FS: typeof FS;
     IDBFS: Emscripten.FileSystemType;
     WORKERFS: Emscripten.FileSystemType;
+    mainScriptUrlOrBlob: string | Blob;
 }
 interface WorkerGlobalScope {
     FFmpegFactory?: EmscriptenModuleFactory;
@@ -21,6 +22,7 @@ interface WorkerGlobalScope {
 let options: Options;
 const files = [] as File[];
 let isExecuting = false;
+let mainScript: string;
 
 
 
@@ -29,7 +31,10 @@ let isExecuting = false;
 //Functions static
 const init = (optionsa: Options) => {
     options = optionsa;
-    if (!self.FFmpegFactory) importScripts(`${options.distFolder}/bin/${options.tool}.js`);
+    if (!self.FFmpegFactory) {
+        mainScript = `${options.distFolder}/bin/${options.tool}.js`;
+        importScripts(mainScript);
+    };
     return;
 }
 const loadFile = (file: File) => {
@@ -51,6 +56,7 @@ const execute = async () => {
         locateFile(path, prefix) {
             return prefix + "bin/" + path;
         },
+        mainScriptUrlOrBlob:mainScript,
 
         // prerun
         preRun: [() => {
@@ -68,11 +74,11 @@ const execute = async () => {
         logReadFiles: false,
 
         // Print streams
-        print(print){
-            postMessage({stream:"stdOut", print});
+        print(print) {
+            postMessage({ stream: "stdOut", print });
         },
-        printErr(print){
-            postMessage({stream:"stdErr", print});
+        printErr(print) {
+            postMessage({ stream: "stdErr", print });
         },
 
         // postrun
