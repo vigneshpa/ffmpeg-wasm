@@ -1,22 +1,18 @@
 #!/bin/bash
 
 # Wasm memory options
-WASM_MEMORY=512    # Initial memory in Mega Bytes
-MEMORY_GROWTH=0    # Wheater to allow memory growth
-WORKER_THREADS=4   # Setting thread pool
-
-# output directory
-DIST_DIR=./package/dist/bin
-
-# build directory
-BUILD_DIR=./build
+WASM_MEMORY=512                                    # Initial memory in Mega Bytes
+MEMORY_GROWTH=0                                    # Wheater to allow memory growth
+WORKER_THREADS='navigator.hardwareConcurrency-1'   # Setting thread pool to no of cores -1
+DIST_DIR=./package/dist/bin                        # directory to save compiled files
+FFMPEG_BUILD_DIR=./build                           # directory to builf ffmpeg
 
 # exit if anyting fails
 set -euo pipefail
 
 # making directories
 mkdir -p $DIST_DIR
-mkdir -p $BUILD_DIR
+mkdir -p $FFMPEG_BUILD_DIR
 
 # loading emsdk environment variables
 source $EMSDK/emsdk_env.sh
@@ -29,7 +25,7 @@ export PATH=$EMSDK/upstream/bin:$PATH
 emcc -v
 
 # Environment variables for emsdk and llvm
-export EM_PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig
+export EM_PKG_CONFIG_PATH=$FFMPEG_BUILD_DIR/lib/pkgconfig
 export TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 
 # initial memory for wasm file
@@ -37,22 +33,22 @@ INITIALM=$(($WASM_MEMORY * 1024 * 1024))
 
 # Compiler and linker flags
 COMPILER_FLAGS=(
-    -o3
-    -s USE_PTHREADS
+    # -o3
+    -pthread
 )
 COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 
 
 LINKER_FLAGS=(
     -s PTHREAD_POOL_SIZE="$WORKER_THREADS"
-    -s INITIAL_MEMORY="$INITIALM"
+    -s INITIAL_MEMORY=$INITIALM
     -s ALLOW_MEMORY_GROWTH=$MEMORY_GROWTH
     -s PTHREAD_POOL_SIZE_STRICT=2
+    -s PTHREADS_DEBUG=1
     -s USE_SDL=2
-    -s NO_PROXY_TO_PTHREAD
     -s INVOKE_RUN
     -s EXIT_RUNTIME
-    -s ENVIRONMENT=worker
+    -s ENVIRONMENT=web,worker
     -s MODULARIZE
     -s EXPORT_NAME=FFmpegFactory
     -s EXPORTED_RUNTIME_METHODS="[FS,WORKERFS,IDBFS]"
@@ -75,14 +71,15 @@ CONFIG_FLAGS=(
     --disable-runtime-cpudetect
     --disable-autodetect
     --disable-ffplay
-    --disable-debug
+    # --disable-debug
+    --disable-hwaccels
     --pkg-config-flags="--static"
     --extra-cflags="$COMPILER_FLAGS"
     --extra-cxxflags="$COMPILER_FLAGS"
     --extra-ldflags="$COMPILER_FLAGS $LINKER_FLAGS"
     --nm=llvm-nm
     --ar=emar
-    --ranlib=llvm-ranlib
+    --ranlib=emranlib
     --cc=emcc
     --cxx=em++
     --objcc=emcc
@@ -91,8 +88,8 @@ CONFIG_FLAGS=(
     
     
     # licence options
-    --enable-gpl
-    --enable-version3
+    # --enable-gpl
+    # --enable-version3
     
     
     
@@ -136,7 +133,7 @@ CONFIG_FLAGS=(
     # --enable-libwebp
     # --enable-libvpx
 )
-cd $BUILD_DIR
+cd $FFMPEG_BUILD_DIR
 DIST_DIR="../$DIST_DIR"
 emconfigure ../ffmpeg/configure "${CONFIG_FLAGS[@]}"
 

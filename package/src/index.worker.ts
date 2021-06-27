@@ -11,7 +11,6 @@ interface EmscriptenModule {
     FS: typeof FS;
     IDBFS: Emscripten.FileSystemType;
     WORKERFS: Emscripten.FileSystemType;
-    mainScriptUrlOrBlob: string | Blob;
 }
 interface WorkerGlobalScope {
     FFmpegFactory?: EmscriptenModuleFactory;
@@ -80,7 +79,6 @@ const execute = async () => {
         printErr(print) {
             postMessage({ stream: "stdErr", print });
         },
-        ENVIRONMENT_IS_PTHREAD:false,
 
         // postrun
         postRun: [

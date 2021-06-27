@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg-WASM test</title>
+</head>
+
+<body>
+    <input type="file" id="filePicker" />
+    <button onclick="getData()">Get Metadata</button>
+    <script src="/dist/bin/ffmpeg.js"></script>
+    <script>
+        const filePicker = document.getElementById("filePicker");
+        window.getData = async function getData() {
+            const arrayBuffer = new Uint8Array(await filePicker.files[0].arrayBuffer());
+            const options = { distFolder: "/dist", tool: "ffmpeg", args: ['-i', `${filePicker.files[0].name}`, 'out.mp4', '-threads', '1'] }
+            const Module = {
+                // prerun
+                preRun: [() => {
+
+                    Module.FS.mkdir("/output");
+                    Module.FS.mount(Module.IDBFS, {}, "/output");
+                    Module.FS.writeFile(filePicker.files[0].name, arrayBuffer);
+                }],
+
+                // Passing arguments
+                arguments: options.args,
+
+                // Print streams
+                print(print) {
+                    console.log({ stream: "stdOut", print });
+                },
+                printErr(print) {
+                    console.log({ stream: "stdErr", print });
+                },
+
+                // postrun
+                postRun: [
+                    () => {
+                        console.log({ event: "postRun" });
+                        console.log(Module);
+                    }
+                ],
+
+                onAbort() {
+                    console.log({ event: "abort" });
+                },
+                onRuntimeInitialized() {
+                    console.log({ event: "runtimeInitialized" });
+                },
+            }
+            const ffmpeg = new FFmpegFactory(Module);
+        }
+    </script>
+</body>
+
+</html>
