@@ -8,9 +8,6 @@
 [submodule "sources/libvpx"]
 	path = sources/libvpx
 	url = https://chromium.googlesource.com/webm/libvpx
-[submodule "sources/WavPack"]
-	path = sources/WavPack
-	url = https://github.com/dbry/WavPack
 [submodule "sources/fdk-aac"]
 	path = sources/fdk-aac
 	url = https://github.com/mstorsjo/fdk-aac
@@ -21,9 +18,6 @@
 [submodule "sources/opus"]
 	path = sources/opus
 	url = https://gitlab.xiph.org/xiph/opus
-[submodule "sources/libwebp"]
-	path = sources/libwebp
-	url = https://chromium.googlesource.com/webm/libwebp
 [submodule "sources/fribidi"]
 	path = sources/fribidi
 	url = https://github.com/fribidi/fribidi
@@ -37,3 +31,15 @@
 [submodule "sources/x265"]
 	path = sources/x265
 	url = https://github.com/videolan/x265
+[submodule "sources/libwebp"]
+	path = sources/libwebp
+	url = https://github.com/webmproject/libwebp
+[submodule "sources/ogg"]
+	path = sources/ogg
+	url = https://github.com/xiph/ogg
+[submodule "sources/vorbis"]
+	path = sources/vorbis
+	url = https://github.com/xiph/vorbis
+[submodule "sources/freetype"]
+	path = sources/freetype
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
