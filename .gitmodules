@@ -1,4 +1,33 @@
-[submodule "ffmpeg"]
-	path = ffmpeg
+[submodule "sources/ffmpeg"]
+	path = sources/ffmpeg
 	url = https://git.ffmpeg.org/ffmpeg.git
-	branch = n4.4
+[submodule "sources/x264"]
+	path = sources/x264
+	url = https://code.videolan.org/videolan/x264.git
+[submodule "sources/libvpx"]
+	path = sources/libvpx
+	url = https://chromium.googlesource.com/webm/libvpx
+[submodule "sources/WavPack"]
+	path = sources/WavPack
+	url = https://github.com/dbry/WavPack
+[submodule "sources/fdk-aac"]
+	path = sources/fdk-aac
+	url = https://github.com/mstorsjo/fdk-aac
+[submodule "sources/theora"]
+	path = sources/theora
+	url = https://gitlab.xiph.org/xiph/theora
+[submodule "sources/opus"]
+	path = sources/opus
+	url = https://gitlab.xiph.org/xiph/opus
+[submodule "sources/libwebp"]
+	path = sources/libwebp
+	url = https://chromium.googlesource.com/webm/libwebp
+[submodule "sources/fribidi"]
+	path = sources/fribidi
+	url = https://github.com/fribidi/fribidi
+[submodule "sources/libass"]
+	path = sources/libass
+	url = https://github.com/libass/libass
+[submodule "sources/lame"]
+	path = sources/lame
+	url = https://github.com/despoa/LAME
