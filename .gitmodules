@@ -1,6 +1,7 @@
 [submodule "sources/ffmpeg"]
 	path = sources/ffmpeg
 	url = https://git.ffmpeg.org/ffmpeg.git
+	branch = n4.4
 [submodule "sources/x264"]
 	path = sources/x264
 	url = https://code.videolan.org/videolan/x264.git
@@ -16,6 +17,7 @@
 [submodule "sources/theora"]
 	path = sources/theora
 	url = https://gitlab.xiph.org/xiph/theora
+	branch = v1.1.1
 [submodule "sources/opus"]
 	path = sources/opus
 	url = https://gitlab.xiph.org/xiph/opus
@@ -31,3 +33,7 @@
 [submodule "sources/lame"]
 	path = sources/lame
 	url = https://github.com/despoa/LAME
+	branch = lame3_100
+[submodule "sources/x265"]
+	path = sources/x265
+	url = https://github.com/videolan/x265
