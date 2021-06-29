@@ -21,8 +21,8 @@
                 // prerun
                 preRun: [() => {
 
-                    Module.FS.mkdir("/output");
-                    Module.FS.mount(Module.IDBFS, {}, "/output");
+                    // Module.FS.mkdir("/output");
+                    // Module.FS.mount(Module.IDBFS, {}, "/output");
                     Module.FS.writeFile(filePicker.files[0].name, arrayBuffer);
                 }],
 

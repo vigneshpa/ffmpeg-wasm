@@ -40,3 +40,20 @@ export PATH=$EMSDK/upstream/bin:$PATH
 emcc -v
 
 export EM_PKG_CONFIG_PATH=$LIB_BUILD_DIR/lib/pkgconfig
+
+
+OPTIMIZATION_FLAGS=(
+    -o3
+    "--closure 1"
+)
+OPTIMIZATION_FLAGS=(-o3)                 # comment out this line to enable closure optimisations
+
+COMPILER_FLAGS=(
+    -pthread
+    -I$LIB_BUILD_DIR/include
+    "${OPTIMIZATION_FLAGS[@]}"
+)
+
+COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
+
+export EMCC_CFLAGS=$COMPILER_FLAGS

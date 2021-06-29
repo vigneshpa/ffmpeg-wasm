@@ -2,30 +2,18 @@
 
 set -eo pipefail
 
-source common.h
+source common.sh
 
 # Build Flags
 
-OPTIMIZATION_FLAGS=(
-    -o3
-    "--closure 1"
-)
-OPTIMIZATION_FLAGS=(-o3)                 # comment out this line to enable closure optimisations
-
-COMPILER_FLAGS=(
-    -pthread
-    -I$LIB_BUILD_DIR/include
-    "${OPTIMIZATION_FLAGS[@]}"
-)
-
-
 LINKER_FLAGS=(
     -s PTHREAD_POOL_SIZE=$WORKER_THREADS
+    -s PTHREAD_POOL_SIZE_STRICT=2
     -s INITIAL_MEMORY=$WASM_MEMORY
     -s ALLOW_MEMORY_GROWTH=$MEMORY_GROWTH
     -s MODULARIZE
     -s EXPORT_NAME=FFmpegFactory
-    -s EXPORTED_RUNTIME_METHODS="[FS]"#,WORKERFS,IDBFS]
+    -s EXPORTED_RUNTIME_METHODS="[FS]"
     -s INVOKE_RUN
     -s EXIT_RUNTIME
     -s ENVIRONMENT=web,worker
@@ -35,8 +23,6 @@ LINKER_FLAGS=(
     # -lidbfs.js
     # -lworkerfs.js
 )
-
-COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
 
 FFMPEG_CONFIG_FLAGS=(
