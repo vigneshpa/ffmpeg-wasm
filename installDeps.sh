@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-source common.h
+source common.sh
 
 
 ##
