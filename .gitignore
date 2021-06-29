@@ -4,5 +4,3 @@
 /package/node_modules
 /package/tsconfig.worker.tsbuildinfo
 /build
-build0.sh
-build1.sh

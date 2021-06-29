@@ -15,8 +15,8 @@
         import FFmpegWasm from "/lib/index.js";
         const filePicker = document.getElementById("filePicker");
         window.getData = async function getData() {
-            const ffmpeg = new FFmpegWasm({ distFolder: "/dist", tool: "ffmpeg", args:['-i', `/input/${filePicker.files[0].name}`, 'out.mp4']});
-            // const ffmpeg = new FFmpegWasm({ distFolder: "/dist", tool: "ffmpeg", args:[`/input/${filePicker.files[0].name}`]});
+            //const ffmpeg = new FFmpegWasm({ distFolder: "/dist", tool: "ffmpeg", args:['-i', `/input/${filePicker.files[0].name}`, 'out.mp4']});
+            const ffmpeg = new FFmpegWasm({ distFolder: "/dist", tool: "ffprobe", args:[`/input/${filePicker.files[0].name}`]});
             await ffmpeg.loadFile(filePicker.files[0]);
             await ffmpeg.init();
             await ffmpeg.execute();

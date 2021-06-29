@@ -16,7 +16,7 @@
         const filePicker = document.getElementById("filePicker");
         window.getData = async function getData() {
             const arrayBuffer = new Uint8Array(await filePicker.files[0].arrayBuffer());
-            const options = { distFolder: "/dist", tool: "ffmpeg", args: ['-i', `${filePicker.files[0].name}`, 'out.mp4', '-threads', '1'] }
+            const options = { distFolder: "/dist", tool: "ffmpeg", args: ['-i', `${filePicker.files[0].name}`, 'out.mp4'] }
             const Module = {
                 // prerun
                 preRun: [() => {

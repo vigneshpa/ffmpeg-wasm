@@ -1,66 +1,45 @@
-#!/bin/bash
+#!/bin/bash -x
 
-# Wasm memory options
-WASM_MEMORY=512                                    # Initial memory in Mega Bytes
-MEMORY_GROWTH=0                                    # Wheater to allow memory growth
-WORKER_THREADS='navigator.hardwareConcurrency-1'   # Setting thread pool to no of cores -1
-DIST_DIR=./package/dist/bin                        # directory to save compiled files
-FFMPEG_BUILD_DIR=./build                           # directory to builf ffmpeg
+set -eo pipefail
 
-# exit if anyting fails
-set -euo pipefail
+source common.h
 
-# making directories
-mkdir -p $DIST_DIR
-mkdir -p $FFMPEG_BUILD_DIR
+# Build Flags
 
-# loading emsdk environment variables
-source $EMSDK/emsdk_env.sh
-
-# adding llvm to path
-export PATH=$EMSDK/upstream/bin:$PATH
-
-
-# verify Emscripten existance
-emcc -v
-
-# Environment variables for emsdk and llvm
-export EM_PKG_CONFIG_PATH=$FFMPEG_BUILD_DIR/lib/pkgconfig
-export TOOLCHAIN_FILE=$EMSDK/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
-
-# initial memory for wasm file
-INITIALM=$(($WASM_MEMORY * 1024 * 1024))
-
-# Compiler and linker flags
-COMPILER_FLAGS=(
-    # -o3
-    -pthread
+OPTIMIZATION_FLAGS=(
+    -o3
+    "--closure 1"
 )
-COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
+OPTIMIZATION_FLAGS=(-o3)                 # comment out this line to enable closure optimisations
+
+COMPILER_FLAGS=(
+    -pthread
+    -I$LIB_BUILD_DIR/include
+    "${OPTIMIZATION_FLAGS[@]}"
+)
 
 
 LINKER_FLAGS=(
-    -s PTHREAD_POOL_SIZE="$WORKER_THREADS"
-    -s INITIAL_MEMORY=$INITIALM
+    -s PTHREAD_POOL_SIZE=$WORKER_THREADS
+    -s INITIAL_MEMORY=$WASM_MEMORY
     -s ALLOW_MEMORY_GROWTH=$MEMORY_GROWTH
-    -s PTHREAD_POOL_SIZE_STRICT=2
-    -s PTHREADS_DEBUG=1
-    -s USE_SDL=2
+    -s MODULARIZE
+    -s EXPORT_NAME=FFmpegFactory
+    -s EXPORTED_RUNTIME_METHODS="[FS]"#,WORKERFS,IDBFS]
     -s INVOKE_RUN
     -s EXIT_RUNTIME
     -s ENVIRONMENT=web,worker
-    -s MODULARIZE
-    -s EXPORT_NAME=FFmpegFactory
-    -s EXPORTED_RUNTIME_METHODS="[FS,WORKERFS,IDBFS]"
-    -lidbfs.js
-    -lworkerfs.js
+    -s USE_SDL=2
+    -s USE_ZLIB
+    -L$LIB_BUILD_DIR/lib
+    # -lidbfs.js
+    # -lworkerfs.js
 )
+
+COMPILER_FLAGS="${COMPILER_FLAGS[@]}"
 LINKER_FLAGS="${LINKER_FLAGS[@]}"
 
-# export EMCC_CFLAGS="$COMPILER_FLAGS $LINKER_FLAGS"
-
-# configure flags
-CONFIG_FLAGS=(
+FFMPEG_CONFIG_FLAGS=(
     --target-os=none
     --arch=x86_32
     --enable-cross-compile
@@ -68,15 +47,13 @@ CONFIG_FLAGS=(
     --disable-inline-asm
     --disable-stripping
     --disable-doc
+    --disable-debug
     --disable-runtime-cpudetect
     --disable-autodetect
-    --disable-ffplay
-    # --disable-debug
-    --disable-hwaccels
-    --pkg-config-flags="--static"
     --extra-cflags="$COMPILER_FLAGS"
     --extra-cxxflags="$COMPILER_FLAGS"
     --extra-ldflags="$COMPILER_FLAGS $LINKER_FLAGS"
+    --pkg-config-flags="--static"
     --nm=llvm-nm
     --ar=emar
     --ranlib=emranlib
@@ -84,66 +61,31 @@ CONFIG_FLAGS=(
     --cxx=em++
     --objcc=emcc
     --dep-cc=emcc
-    
-    
-    
-    # licence options
-    # --enable-gpl
-    # --enable-version3
-    
-    
-    
-    # lib options
-    # # --enable-avisynth
-    # # --disable-cuda-llvm
-    # --enable-lto
-    # --enable-fontconfig
-    # # --enable-libaom
-    # --enable-libass
-    # # --enable-libdav1d
-    # --enable-libfreetype
-    # --enable-libfribidi
-    # # --enable-libgsm
-    # # --enable-libiec61883
-    # # --enable-libjack
-    # # --enable-libmfx
-    # # --enable-libmodplug
-    # --enable-libmp3lame
-    # # --enable-libopencore_amrnb
-    # # --enable-libopencore_amrwb
-    # --enable-libopenjpeg
-    # --enable-libopus
-    # # --enable-libpulse
-    # # --enable-librav1e
-    # --enable-librsvg
-    # --enable-libsoxr
-    # # --enable-libspeex
-    # --enable-libsrt
-    # # --enable-libssh
-    # # --enable-libsvtav1
-    # --enable-libtheora
-    # --enable-libvidstab
-    # --enable-libvmaf
-    # --enable-libvorbis
-    # --enable-libzimg
-    # --enable-libxvid
-    # # --enable-libxml2
-    # --enable-libx264
+    --enable-gpl
+    --enable-nonfree
+    --enable-zlib
+    --enable-libx264
     # --enable-libx265
+    --enable-libvpx
+    --enable-libmp3lame
+    --enable-libfdk-aac
+    --enable-libtheora
+    # --enable-libvorbis
+    # --enable-libfreetype
+    --enable-libopus
     # --enable-libwebp
-    # --enable-libvpx
+    # --enable-libass
+    # --enable-libfribidi
 )
-cd $FFMPEG_BUILD_DIR
-DIST_DIR="../$DIST_DIR"
-emconfigure ../ffmpeg/configure "${CONFIG_FLAGS[@]}"
 
-# build ffmpeg
+cd $FFMPEG_BUILD_DIR
+
+echo "FFMPEG_CONFIG_FLAGS=${FFMPEG_CONFIG_FLAGS_BASE[@]}"
+EM_PKG_CONFIG_PATH=${EM_PKG_CONFIG_PATH} emconfigure $SRC_DIR/ffmpeg/configure "${FFMPEG_CONFIG_FLAGS[@]}"
+
 emmake make -j3
 
-rm -rf $DIST_DIR
-mkdir -p $DIST_DIR
-
-# build ffmpeg.wasm
+# copying ffmpeg.wasm
 cp ./ff*_g* $DIST_DIR/
 cd $DIST_DIR
 for f in *_g; do
