@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 # Build options
-WASM_MEMORY=1024mb                                 # Initial memory in Mega Bytes
+WASM_MEMORY=1536mb                                 # Initial memory in Mega Bytes
 MEMORY_GROWTH=0                                    # Wheater to allow memory growth
 WORKER_THREADS='navigator.hardwareConcurrency-1'   # Setting thread pool to no of cores -1
 DIST_DIR=package/dist/bin                          # Where to save final programs
@@ -46,11 +46,13 @@ OPTIMIZATION_FLAGS=(
     -o3
     "--closure 1"
 )
-OPTIMIZATION_FLAGS=(-o3)                 # comment out this line to enable closure optimisations
+OPTIMIZATION_FLAGS=()                 # comment out this line to enable closure optimisations
 
 COMPILER_FLAGS=(
     -pthread
     -I$LIB_BUILD_DIR/include
+    -s USE_SDL=2
+    -s USE_ZLIB
     "${OPTIMIZATION_FLAGS[@]}"
 )
 

@@ -14,14 +14,15 @@ source common.sh
 (
     LIB_PATH=$SRC_DIR/x264
     CONF_FLAGS=(
-        --prefix=$LIB_BUILD_DIR                                 # install library in a build directory for FFmpeg to include
-        --host=i686-gnu                                     # use i686 linux
-        --enable-static                                     # enable building static library
-        --disable-cli                                       # disable cli tools
-        --disable-asm                                       # disable asm optimization
-        --extra-cflags="-c -pthread $OPTIMIZATION_FLAGS"    # flags to use pthread and code optimization
+        --prefix=$LIB_BUILD_DIR
+        --disable-cli
+        --enable-static
+        --enable-lto
+        --disable-asm
+        --disable-win32thread
+        --host=i686-gnu
     )
-    (cd $LIB_PATH && emconfigure ./configure -C "${CONF_FLAGS[@]}")
+    (cd $LIB_PATH && emconfigure ./configure "${CONF_FLAGS[@]}")
     emmake make -C $LIB_PATH install-lib-static -j3
     emmake make -C $LIB_PATH clean
 )
@@ -39,20 +40,20 @@ source common.sh
 #         -DENABLE_SHARED=OFF
 #         -DENABLE_CLI=OFF
 #     )
-    
+
 #     FLAGS_12BIT=(
 #         ${BASE_FLAGS[@]}
 #         -DHIGH_BIT_DEPTH=ON
 #         -DEXPORT_C_API=OFF
 #         -DMAIN12=ON
 #     )
-    
+
 #     FLAGS_10BIT=(
 #         ${BASE_FLAGS[@]}
 #         -DHIGH_BIT_DEPTH=ON
 #         -DEXPORT_C_API=OFF
 #     )
-    
+
 #     FLAGS_MAIN=(
 #         ${BASE_FLAGS[@]}
 #         -DCMAKE_INSTALL_PREFIX=$LIB_BUILD_DIR
@@ -61,29 +62,29 @@ source common.sh
 #         -DLINKED_10BIT=ON
 #         -DLINKED_12BIT=ON
 #     )
-    
+
 #     cd $LIB_PATH
 #     rm -rf build
 #     mkdir -p build
 #     cd build
 #     mkdir -p main 10bit 12bit
-    
+
 #     cd 12bit
 #     emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_12BIT[@]}
 #     emmake make -j
-    
+
 #     cd ../10bit
 #     emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_10BIT[@]}
 #     emmake make -j
-    
+
 #     cd ../main
 #     ln -sf ../10bit/libx265.a libx265_main10.a
 #     ln -sf ../12bit/libx265.a libx265_main12.a
 #     emmake cmake ../.. -DCMAKE_CXX_FLAGS="$CXXFLAGS" ${FLAGS_MAIN[@]}
 #     emmake make install -j
-    
+
 #     mv libx265.a libx265_main.a
-    
+
 #     # Merge static libraries
 # emar -M <<EOF
 # CREATE libx265.a
@@ -93,13 +94,13 @@ source common.sh
 # SAVE
 # END
 # EOF
-    
+
 #     cp libx265.a $LIB_BUILD_DIR/lib
-    
+
 #     emmake make -C . clean
 #     emmake make -C ../10bit clean
 #     emmake make -C ../12bit clean
-    
+
 #     cd $ROOT_DIR
 # )
 
