@@ -3,13 +3,13 @@
 
 > This software is in developement phase
 
-This repo is intended to make ffmpeg run on browsers without any server side operations. This webassembly build of ffmpeg can run in browsers even without internet connection ( only if you are caching the files using a service worker )
+FFmpeg - WASM is intended to make ffmpeg run on browsers without any server side operations. This webassembly build of ffmpeg can run in browsers even without internet connection ( only if you are caching the files using a service worker )
 
 ## Using this build of ffmpeg
 
 This build of ffmpeg is not completely ready. Once it is ready the prebuilt binaries will be released in npm registry for public use.
 
-To use this build I have created an API which abstracts the complexcities of the built javascript Emscripten module. This interface is completely written in typescript and hence has first class typescript support.
+To use this build I have created an wrapper which abstracts the complexcities of the built javascript Emscripten module. This interface is completely written in typescript and hence has first class typescript support.
 >It is not necessary to use TypeScript to use this module in your application.
 
 To learn how to use this library head over to [package](package/Readme.md).

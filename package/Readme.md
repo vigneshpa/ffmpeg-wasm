@@ -5,7 +5,7 @@
 
 > This software is in developement phase
 
-This repo is intended to make ffmpeg run on browsers without any server side operations. This webassembly build of ffmpeg can run in browsers even without internet connection ( only if you are caching the files using a service worker )
+FFmpeg - WASM is intended to make ffmpeg run on browsers without any server side operations. This webassembly build of ffmpeg can run in browsers even without internet connection ( only if you are caching the files using a service worker )
 
 ## Installation
 
